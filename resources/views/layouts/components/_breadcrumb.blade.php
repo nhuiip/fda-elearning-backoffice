@@ -1,9 +1,9 @@
 <div class="page-title pt-0">
     <div class="row">
-        <div class="col-12 col-sm-8">
+        <div class="col-12 col-sm-6">
             <h3>{{ $title }}</h3>
         </div>
-        <div class="col-12 col-sm-4">
+        <div class="col-12 col-sm-6">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="index.html" data-bs-original-title="" title=""> <svg
                             xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"

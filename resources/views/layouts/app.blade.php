@@ -148,7 +148,7 @@
                                             class="fa fa-angle-right ps-2" aria-hidden="true"> </i></div>
                                 </li>
                                 <li class="sidebar-list">
-                                    <a class="sidebar-link sidebar-title link-nav @if (Route::is('lessons.*')) menu-active @endif"
+                                    <a class="sidebar-link sidebar-title link-nav @if (Route::is('lessons.*') || Route::is('questions.*')) menu-active @endif"
                                         href="{{ route('lessons.index') }}">
                                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
                                             xmlns="http://www.w3.org/2000/svg">

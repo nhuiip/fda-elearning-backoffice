@@ -5,10 +5,11 @@
 @endsection
 @section('content')
     @if (empty($data))
-        {{ Form::open(['novalidate', 'route' => 'lessons.store', 'class' => 'form-horizontal', 'id' => 'data-form', 'method' => 'post', 'files' => true]) }}
+        {{ Form::open(['novalidate', 'route' => 'questions.store', 'class' => 'form-horizontal', 'id' => 'data-form', 'method' => 'post', 'files' => true]) }}
     @else
-        {{ Form::model($data, ['novalidate', 'route' => ['lessons.update', $data->id], 'class' => 'form-horizontal', 'id' => 'data-form', 'method' => 'put', 'files' => true]) }}
+        {{ Form::model($data, ['novalidate', 'route' => ['questions.update', $data->id], 'class' => 'form-horizontal', 'id' => 'data-form', 'method' => 'put', 'files' => true]) }}
     @endif
+    {{ Form::hidden('lessonId', $lesson->id) }}
     <div class="card">
         <div class="card-body">
             <div class="form-group">
@@ -29,25 +30,34 @@
                         @enderror
                     </div>
                     <div class="col-3">
-                        <label class="form-label"><span class="text-danger">*</span> Score (%)</label>
-                        {{ Form::number('passScore', old('passScore'), ['class' => 'form-control', 'required', 'placeholder' => 'Enter score']) }}
-                        @error('passScore')
+                        <label class="form-label"><span class="text-danger">*</span> Score</label>
+                        {{ Form::number('score', old('score'), ['class' => 'form-control', 'required', 'placeholder' => 'Enter score']) }}
+                        @error('score')
+                            <small class="text-danger">{{ $message }}</small>
+                        @enderror
+                    </div>
+                    <div class="col-6">
+                        <label class="form-label">
+                            Image
+                            @if (!empty($data) && $data->hasImage)
+                                <a href="{{ $data->imageUrl }}" target="_blank" rel="noopener noreferrer"><i
+                                        class="text-danger"><u>View image</u></i></a> |
+                                <a href="javascript:;" data-text="Delete!" data-form="delete-form-{{ $data->id }}"
+                                    onclick="fncDelete(this)" rel="noopener noreferrer"><i class="text-danger"><u>Delete
+                                            image</u></i></a>
+                            @endif
+                        </label>
+                        {{ Form::file('image', ['class' => 'form-control', 'accept' => 'image/*']) }}
+                        @error('image')
                             <small class="text-danger">{{ $message }}</small>
                         @enderror
                     </div>
                 </div>
                 <div class="row mb-3">
-                    <div class="col-6">
-                        <label class="form-label"><span class="text-danger">*</span> Name</label>
-                        {{ Form::text('name', old('name'), ['class' => 'form-control', 'required', 'placeholder' => 'Enter name']) }}
+                    <div class="col-12">
+                        <label class="form-label"><span class="text-danger">*</span> Question</label>
+                        {{ Form::text('name', old('name'), ['class' => 'form-control', 'required', 'placeholder' => 'Enter question']) }}
                         @error('name')
-                            <small class="text-danger">{{ $message }}</small>
-                        @enderror
-                    </div>
-                    <div class="col-6">
-                        <label class="form-label">Video Url</label>
-                        {{ Form::text('videoUrl', old('videoUrl'), ['class' => 'form-control', 'required', 'placeholder' => 'Enter video url']) }}
-                        @error('videoUrl')
                             <small class="text-danger">{{ $message }}</small>
                         @enderror
                     </div>
@@ -76,6 +86,12 @@
             </div>
         </div>
     </div>
+    {!! Form::close() !!}
+
+    {{ Form::model($data, ['novalidate', 'route' => ['questions.update', $data->id], 'class' => 'form-horizontal', 'id' => 'delete-form-' . $data->id, 'method' => 'put', 'files' => true]) }}
+    {{ Form::hidden('imageUrl', '') }}
+    {{ Form::hidden('hasImage', 0) }}
+    {{ Form::hidden('action', 'deleteImage') }}
     {!! Form::close() !!}
 @endsection
 @section('script')
