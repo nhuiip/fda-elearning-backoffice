@@ -13,7 +13,14 @@ return new class extends Migration
     {
         Schema::create('lessons', function (Blueprint $table) {
             $table->id();
+            $table->string('name');
+            $table->longText('description')->nullable();
+            $table->string('videoUrl')->nullable();
+            $table->integer('passScore')->comment('เกณฑ์คะแนนที่ผ่าน หน่วยเป็น %');
+            $table->integer('sort')->comment('ลำดับการแสดงผล');
+            $table->integer('status')->comment('0 = inactive, 1 = active')->default(1);
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

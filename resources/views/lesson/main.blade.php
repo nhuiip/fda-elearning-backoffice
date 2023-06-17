@@ -8,7 +8,7 @@
         <div class="card-header pb-0">
             <div class="row">
                 <div class="col-10">
-                    @include('layouts.components.buttons._create', ['url' => route('users.create')])
+                    @include('layouts.components.buttons._create', ['url' => route('lessons.create')])
                 </div>
                 <div class="col-2">
                     @include('layouts.components._input-query')
@@ -16,13 +16,15 @@
             </div>
         </div>
         <div class="card-body">
-            <table id="dataTable" class="table-hover table-border-vertical table-border-horizontal" data-url="{{ route('users.jsontable') }}">
+            <table id="dataTable" class="table-hover table-border-vertical table-border-horizontal"
+                data-url="{{ route('lessons.jsontable') }}">
                 <thead>
                     <tr>
                         <th>#</th>
                         <th>Name</th>
-                        <th>Email</th>
-                        <th>Role</th>
+                        <th>Passed (%)</th>
+                        <th>Sort</th>
+                        <th>Status</th>
                         <th>Created</th>
                         <th>Updated</th>
                         <th></th>
@@ -50,25 +52,26 @@
             },
             columnDefs: [{
                     targets: [0],
-                    width: '10%'
-                },
-                {
-                    targets: [1,2],
-                    orderable: false
-                },
-                {
-                    targets: [3],
-                    width: '5%',
-                    className: 'text-center',
-                    orderable: false
-                },
-                {
-                    targets: [4, 5],
                     width: '10%',
-                    orderable: false
+                    orderable: true
                 },
                 {
-                    targets: [6],
+                    targets: [1],
+                    orderable: true
+                },
+                {
+                    targets: [2, 3, 4],
+                    width: '10%',
+                    className: 'text-center',
+                    orderable: true
+                },
+                {
+                    targets: [5, 6],
+                    width: '10%',
+                    orderable: true
+                },
+                {
+                    targets: [7],
                     width: '5%',
                     className: 'text-center',
                     orderable: false
@@ -81,10 +84,13 @@
                     data: 'name'
                 },
                 {
-                    data: 'email'
+                    data: 'passScore'
                 },
                 {
-                    data: 'role'
+                    data: 'sort'
+                },
+                {
+                    data: 'status'
                 },
                 {
                     data: 'created_at'
