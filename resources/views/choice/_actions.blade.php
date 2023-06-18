@@ -4,7 +4,7 @@
         <span class="visually-hidden">Toggle Dropdown</span>
     </button>
     <ul class="dropdown-menu">
-        <li><a class="dropdown-item" href="{{ route('questions.edit', $id) }}"><i class="fa fa-pencil"></i>&nbsp; Edit</a>
+        <li><a class="dropdown-item" href="{{ route('choices.edit', $id) }}"><i class="fa fa-pencil"></i>&nbsp; Edit</a>
         <li>
             <hr class="dropdown-divider">
         </li>
@@ -13,7 +13,7 @@
                 Delete</a></li>
     </ul>
 </div>
-<form id="delete-form-{{ $id }}" method="post" action="{{ route('questions.destroy', $id) }}">
+<form id="delete-form-{{ $id }}" method="post" action="{{ route('choices.destroy', $id) }}">
     @csrf
     @method('DELETE')
 </form>

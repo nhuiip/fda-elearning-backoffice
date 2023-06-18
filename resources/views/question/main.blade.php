@@ -18,12 +18,13 @@
             </div>
         </div>
         <div class="card-body">
+            <input type="hidden" id="lessonId" value="{{ $lesson->id }}">
             <table id="dataTable" class="table-hover table-border-vertical table-border-horizontal"
                 data-url="{{ route('questions.jsontable') }}">
                 <thead>
                     <tr>
                         <th>#</th>
-                        <th>Name</th>
+                        <th>Question</th>
                         <th>Score</th>
                         <th>Sort</th>
                         <th>Status</th>
@@ -50,7 +51,10 @@
             dom: 'rtip',
             ajax: {
                 url: $('#dataTable').attr('data-url'),
-                type: "GET"
+                type: "GET",
+                data: function(d) {
+                    d.lessonId = $('#lessonId').val();
+                },
             },
             columnDefs: [{
                     targets: [0],

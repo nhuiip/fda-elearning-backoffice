@@ -7,60 +7,53 @@
 namespace App\Models;
 
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
- * Class Question
+ * Class Choice
  * 
  * @property int $id
- * @property int $lessonId
- * @property string $name
+ * @property int $questionId
+ * @property string|null $name
  * @property bool $hasImage
  * @property string|null $imageUrl
- * @property int $score
+ * @property bool $isRight
  * @property int $sort
  * @property bool $status
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property string|null $deleted_at
  * 
- * @property Lesson $lesson
- * @property Collection|Choice[] $choices
+ * @property Question $question
  *
  * @package App\Models
  */
-class Question extends Model
+class Choice extends Model
 {
 	use SoftDeletes;
-	protected $table = 'questions';
+	protected $table = 'choices';
 
 	protected $casts = [
-		'lessonId' => 'int',
+		'questionId' => 'int',
 		'hasImage' => 'bool',
-		'score' => 'int',
+		'isRight' => 'bool',
 		'sort' => 'int',
 		'status' => 'bool'
 	];
 
 	protected $fillable = [
-		'lessonId',
+		'questionId',
 		'name',
 		'hasImage',
 		'imageUrl',
-		'score',
+		'isRight',
 		'sort',
 		'status'
 	];
 
-	public function lesson()
+	public function question()
 	{
-		return $this->belongsTo(Lesson::class, 'lessonId');
-	}
-
-	public function choices()
-	{
-		return $this->hasMany(Choice::class, 'questionId');
+		return $this->belongsTo(Question::class, 'questionId');
 	}
 }

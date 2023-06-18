@@ -2,44 +2,29 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Lesson;
+use App\Models\Choice;
 use App\Models\Question;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
 
-class QuestionController extends Controller
+class ChoiceController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index($lessonId)
-    {
-        $lesson = Lesson::findOrFail($lessonId);
-        $breadcrumbs = [
-            ['route' => route('lessons.index'), 'name' => 'Lesson Management'],
-            ['route' => '', 'name' => 'Question Management'],
-        ];
-        return view('question.main', [
-            'title' => $lesson->name . ': Question Management',
-            'breadcrumbs' => $breadcrumbs,
-            'lesson' => $lesson
-        ]);
-    }
-
     /**
      * Show the form for creating a new resource.
      */
-    public function create($lessonId)
+    public function create($questionId)
     {
+        $question = Question::findOrFail($questionId);
         $breadcrumbs = [
             ['route' => route('lessons.index'), 'name' => 'Lesson Management'],
-            ['route' => route('questions.index', $lessonId), 'name' => 'Question Management'],
-            ['route' => '', 'name' => 'Create Question'],
+            ['route' => route('questions.index', $question->lessonId), 'name' => 'Question Management'],
+            ['route' => route('questions.edit', $question->id), 'name' => 'Edit Question'],
+            ['route' => '', 'name' => 'Create Choice'],
         ];
-        return view('question.form', [
-            'title' => 'Create Question',
+        return view('choice.form', [
+            'title' => 'Create Choice',
             'breadcrumbs' => $breadcrumbs,
-            'lesson' => Lesson::findOrFail($lessonId)
+            'question' => $question
         ]);
     }
 
@@ -51,27 +36,22 @@ class QuestionController extends Controller
         $this->validate(
             $request,
             [
-                'name' => 'required|max:100',
-                'score' => 'required|integer',
                 'sort' => 'required|integer',
                 'image' => 'mimes:jpeg,jpg,png,webp',
             ],
             [
-                'name.required' => 'Please enter question',
-                'name.max' => 'Question cannot be longer than 100 characters.',
-                'score.required' => 'Please enter score',
-                'score.integer' => 'Please enter numbers only.',
                 'sort.required' => 'Please enter name',
                 'sort.integer' => 'Please enter numbers only.',
                 'image.mimes' => 'Only jpeg,jpg,png,webp file type is supported.',
             ]
         );
 
-        $data = new Question($request->all());
+        $data = new Choice($request->all());
         $data->save();
 
+        $question = Question::findOrFail($data->questionId);
         if ($request->hasfile('image')) {
-            $imageUrl = $request->file('image')->store('lesson/' . $data->lessonId . '/question/' . $data->id, 'public');
+            $imageUrl = $request->file('image')->store('lesson/' . $question->lessonId . '/question/' . $question->id . '/choice/' . $data->id, 'public');
 
             // !update image url
             $data->hasImage = true;
@@ -79,7 +59,7 @@ class QuestionController extends Controller
             $data->save();
         }
 
-        return redirect()->route('questions.edit', $data->lessonId)->with('toast_success', 'Create data succeed!');
+        return redirect()->route('questions.edit', $question->lessonId)->with('toast_success', 'Create data succeed!');
     }
 
     /**
@@ -87,16 +67,18 @@ class QuestionController extends Controller
      */
     public function edit(string $id)
     {
-        $data = Question::findOrFail($id);
+        $data = Choice::findOrFail($id);
+        $question = Question::findOrFail($data->questionId);
         $breadcrumbs = [
             ['route' => route('lessons.index'), 'name' => 'Lesson Management'],
-            ['route' => route('questions.index', $data->lessonId), 'name' => 'Question Management'],
-            ['route' => '', 'name' => 'Edit Question'],
+            ['route' => route('questions.index', $question->lessonId), 'name' => 'Question Management'],
+            ['route' => route('questions.edit', $question->id), 'name' => 'Edit Question'],
+            ['route' => '', 'name' => 'Edit Choice'],
         ];
-        return view('question.form', [
-            'title' => 'Edit Question',
+        return view('choice.form', [
+            'title' => 'Edit Choice',
             'breadcrumbs' => $breadcrumbs,
-            'lesson' => Lesson::findOrFail($data->lessonId),
+            'question' => $question,
             'data' => $data
         ]);
     }
@@ -110,16 +92,10 @@ class QuestionController extends Controller
             $this->validate(
                 $request,
                 [
-                    'name' => 'required|max:100',
-                    'score' => 'required|integer',
                     'sort' => 'required|integer',
                     'image' => 'mimes:jpeg,jpg,png,webp',
                 ],
                 [
-                    'name.required' => 'Please enter question',
-                    'name.max' => 'Question cannot be longer than 100 characters.',
-                    'score.required' => 'Please enter score',
-                    'score.integer' => 'Please enter numbers only.',
                     'sort.required' => 'Please enter name',
                     'sort.integer' => 'Please enter numbers only.',
                     'image.mimes' => 'Only jpeg,jpg,png,webp file type is supported.',
@@ -127,7 +103,7 @@ class QuestionController extends Controller
             );
         }
 
-        $data = Question::findOrFail($id);
+        $data = Choice::findOrFail($id);
         $data->update($request->all());
         $data->save();
 
@@ -135,9 +111,14 @@ class QuestionController extends Controller
             $data->status = false;
             $data->save();
         }
+        if ($request->action != 'deleteImage' && $request->isRight == null) {
+            $data->isRight = false;
+            $data->save();
+        }
 
+        $question = Question::findOrFail($data->questionId);
         if ($request->hasfile('image')) {
-            $imageUrl = $request->file('image')->store('lesson/' . $data->lessonId . '/question/' . $data->id, 'public');
+            $imageUrl = $request->file('image')->store('lesson/' . $question->lessonId . '/question/' . $question->id . '/choice/' . $data->id, 'public');
 
             // !update image url
             $data->hasImage = true;
@@ -151,7 +132,7 @@ class QuestionController extends Controller
                 break;
 
             default:
-                return redirect()->route('questions.edit', $data->lessonId)->with('toast_success', 'Update data succeed!');
+                return redirect()->route('questions.edit', $question->lessonId)->with('toast_success', 'Update data succeed!');
                 break;
         }
     }
@@ -161,7 +142,7 @@ class QuestionController extends Controller
      */
     public function destroy(string $id)
     {
-        $data = Question::findOrFail($id);
+        $data = Choice::findOrFail($id);
         $data->delete();
         return back()->with('toast_success', 'Delete data succeed!');
     }
@@ -173,12 +154,12 @@ class QuestionController extends Controller
         $search = $request->get('search');
         $order = $request->get('order');
 
-        $lessonId = $request->get('lessonId');
+        $questionId = $request->get('questionId');
 
         $columnorder = array(
             'id',
             'name',
-            'score',
+            'isRight',
             'sort',
             'status',
             'created_at',
@@ -196,9 +177,9 @@ class QuestionController extends Controller
         // query
         $keyword = trim($search['value']);
 
-        $data = Question::when($lessonId, function ($query, $lessonId) {
-            if (!empty($lessonId)) {
-                return $query->where('lessonId', $lessonId);
+        $data = Choice::when($questionId, function ($query, $questionId) {
+            if (!empty($questionId)) {
+                return $query->where('questionId', $questionId);
             }
         })
             ->when($keyword, function ($query, $keyword) {
@@ -210,16 +191,16 @@ class QuestionController extends Controller
             ->limit($length)
             ->orderBy($sort, $dir)
             ->get();
-        $recordsTotal = Question::select('id')
-            ->when($lessonId, function ($query, $lessonId) {
-                if (!empty($lessonId)) {
-                    return $query->where('lessonId', $lessonId);
+        $recordsTotal = Choice::select('id')
+            ->when($questionId, function ($query, $questionId) {
+                if (!empty($questionId)) {
+                    return $query->where('questionId', $questionId);
                 }
             })->count();
-        $recordsFiltered = Question::select('id')
-            ->when($lessonId, function ($query, $lessonId) {
-                if (!empty($lessonId)) {
-                    return $query->where('lessonId', $lessonId);
+        $recordsFiltered = Choice::select('id')
+            ->when($questionId, function ($query, $questionId) {
+                if (!empty($questionId)) {
+                    return $query->where('questionId', $questionId);
                 }
             })
             ->when($keyword, function ($query, $keyword) {
@@ -232,6 +213,12 @@ class QuestionController extends Controller
             ->editColumn('id', function ($data) {
                 return str_pad($data->id, 5, "0", STR_PAD_LEFT);
             })
+            ->editColumn('name', function ($data) {
+                return !$data->hasImage ? $data->name : '<a href="' . $data->imageUrl . '" target="_blank">' . $data->imageUrl . '</a>';
+            })
+            ->editColumn('isRight', function ($data) {
+                return $data->isRight ? '<i class="text-success"><u><b>Yes</b></u></i>' : '<i class="text-danger"><u><b>No</b></u></i>';
+            })
             ->editColumn('status', function ($data) {
                 return $data->status ? '<i class="text-success"><u><b>Active</b></u></i>' : '<i class="text-danger"><u><b>Inactive</b></u></i>';
             })
@@ -243,7 +230,7 @@ class QuestionController extends Controller
             })
             ->addColumn('action', function ($data) {
                 $id = $data->id;
-                return view('question._actions', compact('id'));
+                return view('choice._actions', compact('id'));
             })
             ->setTotalRecords($recordsTotal)
             ->setFilteredRecords($recordsFiltered)
