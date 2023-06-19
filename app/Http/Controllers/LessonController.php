@@ -45,13 +45,13 @@ class LessonController extends Controller
         $this->validate(
             $request,
             [
-                'name' => 'required|max:100',
+                'name' => 'required|max:255',
                 'passScore' => 'required|integer',
                 'sort' => 'required|integer'
             ],
             [
                 'name.required' => 'Please enter name',
-                'name.max' => 'Name cannot be longer than 100 characters.',
+                'name.max' => 'Name cannot be longer than 255 characters.',
                 'passScore.required' => 'Please enter score',
                 'passScore.integer' => 'Please enter numbers only.',
                 'sort.required' => 'Please enter name',
@@ -89,13 +89,13 @@ class LessonController extends Controller
         $this->validate(
             $request,
             [
-                'name' => 'required|max:100',
+                'name' => 'required|max:255',
                 'passScore' => 'required|integer',
                 'sort' => 'required|integer'
             ],
             [
                 'name.required' => 'Please enter name',
-                'name.max' => 'Name cannot be longer than 100 characters.',
+                'name.max' => 'Name cannot be longer than 255 characters.',
                 'passScore.required' => 'Please enter score',
                 'passScore.integer' => 'Please enter numbers only.',
                 'sort.required' => 'Please enter name',

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ChoiceController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LessonController;
 use App\Http\Controllers\MemberController;
 use App\Http\Controllers\QuestionController;
@@ -24,6 +25,15 @@ Route::get('/', function () {
 });
 
 Auth::routes();
+Route::group(['middleware' => ['auth']], function () {
+    // * dashboard
+    Route::resource('dashboard', DashboardController::class);
+    // * members
+    Route::resource('members', MemberController::class)->except('create', 'show');
+    Route::get('/members/create/{type}', [MemberController::class, 'create'])->name('members.create');
+    Route::post('/members/import', [MemberController::class, 'import'])->name('members.import');
+    Route::get('/members/jsontable', [MemberController::class, 'jsontable'])->name('members.jsontable');
+});
 Route::group(['middleware' => ['role:Admin']], function () {
     // * users
     Route::resource('users', UserController::class)->except('show');
@@ -41,9 +51,4 @@ Route::group(['middleware' => ['role:Admin']], function () {
     Route::resource('choices', ChoiceController::class)->except('index', 'create', 'show');
     Route::get('/choices/create/{questionId}', [ChoiceController::class, 'create'])->name('choices.create');
     Route::get('/choices/jsontable', [ChoiceController::class, 'jsontable'])->name('choices.jsontable');
-    // *members
-    Route::resource('members', MemberController::class)->except('create', 'show');
-    Route::get('/members/create/{type}', [MemberController::class, 'create'])->name('members.create');
-    Route::post('/members/import', [MemberController::class, 'import'])->name('members.import');
-    Route::get('/members/jsontable', [MemberController::class, 'jsontable'])->name('members.jsontable');
 });

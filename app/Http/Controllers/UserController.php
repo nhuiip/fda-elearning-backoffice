@@ -15,7 +15,7 @@ class UserController extends Controller
     public function index()
     {
         $breadcrumbs = [
-            ['route' => '', 'name' => 'User Management'],
+            ['route' => '', 'name' => 'User dashboard'],
         ];
         return view('user.main', [
             'title' => 'User Management',
@@ -47,7 +47,7 @@ class UserController extends Controller
         $this->validate(
             $request,
             [
-                'name' => 'required|max:100',
+                'name' => 'required|max:255',
                 'email' => 'required|email|unique:users|max:255',
                 'role' => 'required',
                 'password' => 'required', 'min:8', 'confirmed',
@@ -55,7 +55,7 @@ class UserController extends Controller
             ],
             [
                 'name.required' => 'Please enter name',
-                'name.max' => 'Name cannot be longer than 100 characters.',
+                'name.max' => 'Name cannot be longer than 255 characters.',
                 'email.required' => 'Please enter email',
                 'email.email' => 'Invalid email format',
                 'email.unique' => 'Email has already been taken.',
@@ -120,13 +120,13 @@ class UserController extends Controller
                 $this->validate(
                     $request,
                     [
-                        'name' => 'required|max:100',
+                        'name' => 'required|max:255',
                         'email' => 'required|email|max:255|unique:users,email,' . $id,
                         'role' => 'required',
                     ],
                     [
                         'name.required' => 'Please enter name',
-                        'name.max' => 'Name cannot be longer than 100 characters.',
+                        'name.max' => 'Name cannot be longer than 255 characters.',
                         'email.required' => 'Please enter email',
                         'email.email' => 'Invalid email format',
                         'email.unique' => 'Email has already been taken.',

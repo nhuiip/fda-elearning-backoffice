@@ -59,7 +59,7 @@ class ChoiceController extends Controller
             $data->save();
         }
 
-        return redirect()->route('questions.edit', $question->lessonId)->with('toast_success', 'Create data succeed!');
+        return redirect()->route('questions.edit', $data->questionId)->with('toast_success', 'Create data succeed!');
     }
 
     /**
@@ -132,7 +132,7 @@ class ChoiceController extends Controller
                 break;
 
             default:
-                return redirect()->route('questions.edit', $question->lessonId)->with('toast_success', 'Update data succeed!');
+                return redirect()->route('questions.edit', $data->questionId)->with('toast_success', 'Update data succeed!');
                 break;
         }
     }

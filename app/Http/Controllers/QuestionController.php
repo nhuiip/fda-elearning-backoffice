@@ -51,14 +51,14 @@ class QuestionController extends Controller
         $this->validate(
             $request,
             [
-                'name' => 'required|max:100',
+                'name' => 'required|max:255',
                 'score' => 'required|integer',
                 'sort' => 'required|integer',
                 'image' => 'mimes:jpeg,jpg,png,webp',
             ],
             [
                 'name.required' => 'Please enter question',
-                'name.max' => 'Question cannot be longer than 100 characters.',
+                'name.max' => 'Question cannot be longer than 255 characters.',
                 'score.required' => 'Please enter score',
                 'score.integer' => 'Please enter numbers only.',
                 'sort.required' => 'Please enter name',
@@ -79,7 +79,7 @@ class QuestionController extends Controller
             $data->save();
         }
 
-        return redirect()->route('questions.edit', $data->lessonId)->with('toast_success', 'Create data succeed!');
+        return redirect()->route('questions.edit', $data->id)->with('toast_success', 'Create data succeed!');
     }
 
     /**
@@ -110,14 +110,14 @@ class QuestionController extends Controller
             $this->validate(
                 $request,
                 [
-                    'name' => 'required|max:100',
+                    'name' => 'required|max:255',
                     'score' => 'required|integer',
                     'sort' => 'required|integer',
                     'image' => 'mimes:jpeg,jpg,png,webp',
                 ],
                 [
                     'name.required' => 'Please enter question',
-                    'name.max' => 'Question cannot be longer than 100 characters.',
+                    'name.max' => 'Question cannot be longer than 255 characters.',
                     'score.required' => 'Please enter score',
                     'score.integer' => 'Please enter numbers only.',
                     'sort.required' => 'Please enter name',
@@ -151,7 +151,7 @@ class QuestionController extends Controller
                 break;
 
             default:
-                return redirect()->route('questions.edit', $data->lessonId)->with('toast_success', 'Update data succeed!');
+                return redirect()->route('questions.edit', $data->id)->with('toast_success', 'Update data succeed!');
                 break;
         }
     }
