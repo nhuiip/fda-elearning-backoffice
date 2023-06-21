@@ -25,6 +25,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property Carbon|null $updated_at
  * @property string|null $deleted_at
  * 
+ * @property Collection|Exam[] $exams
  * @property Collection|Question[] $questions
  *
  * @package App\Models
@@ -48,6 +49,11 @@ class Lesson extends Model
 		'sort',
 		'status'
 	];
+
+	public function exams()
+	{
+		return $this->hasMany(Exam::class, 'lessonId');
+	}
 
 	public function questions()
 	{

@@ -7,6 +7,7 @@
 namespace App\Models;
 
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -30,6 +31,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property string|null $deleted_at
+ * 
+ * @property Collection|Exam[] $exams
  *
  * @package App\Models
  */
@@ -72,4 +75,9 @@ class Member extends Model
 		'firstLoginDate',
 		'lastVisitDate'
 	];
+
+	public function exams()
+	{
+		return $this->hasMany(Exam::class, 'memberId');
+	}
 }

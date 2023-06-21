@@ -8,11 +8,18 @@
         <div class="card-header pb-0">
             <div class="row">
                 <div class="col-10">
-                    @include('layouts.components.buttons._create', [
-                        'url' => route('members.create', 'formData'),
-                    ])
-                    <a href="{{route('members.create', 'import')}}" class="btn btn-outline-success"><i class="fa fa-file-excel-o"></i>&nbsp;
+                    <a href="{{ asset('temp-header-import.xlsx') }}" target="_blank" class="btn btn-outline-light" download><i
+                            class="fa fa-file-excel-o"></i>&nbsp;
+                        Download template for Import</a>
+                    <a href="{{ route('members.create', 'import') }}" class="btn btn-outline-success"><i
+                            class="fa fa-file-excel-o"></i>&nbsp;
                         Import</a>
+                    <a href="javascript:;" onclick="sendMailAll(this)" data-url="{{ route('sendMailAll') }}"
+                        class="btn btn-outline-info"><i class="fa fa-envelope"></i>&nbsp;
+                        Send Password</a>
+                    <a href="javascript:;" onclick="sendMailNewMember(this)" data-url="{{ route('sendMailNewMember') }}"
+                        class="btn btn-outline-primary"><i class="fa fa-envelope"></i>&nbsp;
+                        Send Password (New)</a>
                 </div>
                 <div class="col-2">
                     @include('layouts.components._input-query')
@@ -64,7 +71,7 @@
                     orderable: false
                 },
                 {
-                    targets: [4, 5,6,7],
+                    targets: [4, 5, 6, 7],
                     width: '10%',
                     orderable: false
                 },
@@ -104,5 +111,81 @@
                 }
             ]
         });
+
+        function sendMail(e) {
+            let url = $(e).attr('data-url');
+            $.ajax({
+                url: url,
+                type: 'GET',
+                dataType: 'JSON',
+                success: function(data) {
+                    console.log(data);
+                }
+            });
+        }
+
+        function sendMailAll(e) {
+            let url = $(e).attr('data-url');
+            new swal({
+                title: "Are you sure?",
+                text: "Once deleted, You won't be able to revert this!",
+                icon: "warning",
+                buttons: {
+                    cancel: true,
+                    confirm: {
+                        text: "Send Email",
+                        className: 'btn-info',
+                    },
+                },
+            }).then((data) => {
+                $.ajax({
+                    url: url,
+                    type: 'GET',
+                    dataType: 'JSON',
+                    success: function(resp) {
+                        // new swal({
+                        //     title: "Good job!",
+                        //     text: "Send password success!",
+                        //     icon: "success",
+                        // })
+                    }
+                });
+                // setTimeout(function() {
+                //     swal("Ajax request finished!");
+                // }, 2000);
+            });
+        }
+
+        function sendMailNewMember(e) {
+            let url = $(e).attr('data-url');
+            new swal({
+                title: "Are you sure?",
+                text: "Once deleted, You won't be able to revert this!",
+                icon: "warning",
+                buttons: {
+                    cancel: true,
+                    confirm: {
+                        text: "Send Email",
+                        className: 'btn-info',
+                    },
+                },
+            }).then((data) => {
+                $.ajax({
+                    url: url,
+                    type: 'GET',
+                    dataType: 'JSON',
+                    success: function(resp) {
+                        // new swal({
+                        //     title: "Good job!",
+                        //     text: "Send password success!",
+                        //     icon: "success",
+                        // })
+                    }
+                });
+                // setTimeout(function() {
+                //     swal("Ajax request finished!");
+                // }, 2000);
+            });
+        }
     </script>
 @endsection

@@ -7,6 +7,7 @@
 namespace App\Models;
 
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -26,6 +27,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property string|null $deleted_at
  * 
  * @property Question $question
+ * @property Collection|ExamsItem[] $exams_items
  *
  * @package App\Models
  */
@@ -55,5 +57,10 @@ class Choice extends Model
 	public function question()
 	{
 		return $this->belongsTo(Question::class, 'questionId');
+	}
+
+	public function exams_items()
+	{
+		return $this->hasMany(ExamsItem::class, 'choiceId');
 	}
 }

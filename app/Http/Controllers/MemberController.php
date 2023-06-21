@@ -201,6 +201,9 @@ class MemberController extends Controller
             ->editColumn('registerDate', function ($data) {
                 return '<small>' . date('d/m/Y', strtotime($data->registerDate)) . '<br><i class="far fa-clock"></i> ' . date('h:i A', strtotime($data->registerDate)) . '</small>';
             })
+            ->editColumn('lastVisitDate', function ($data) {
+                return $data->lastVisitDate != null ? '<small>' . date('d/m/Y', strtotime($data->lastVisitDate)) . '<br><i class="far fa-clock"></i> ' . date('h:i A', strtotime($data->lastVisitDate)) . '</small>' : '';
+            })
             ->addColumn('action', function ($data) {
                 $id = $data->id;
                 return view('member._actions', compact('id'));

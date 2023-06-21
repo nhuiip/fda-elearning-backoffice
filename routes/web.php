@@ -3,6 +3,7 @@
 use App\Http\Controllers\ChoiceController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LessonController;
+use App\Http\Controllers\MailController;
 use App\Http\Controllers\MemberController;
 use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\UserController;
@@ -25,6 +26,9 @@ Route::get('/', function () {
 });
 
 Auth::routes();
+Route::get('/sendMail/{memberId}',[MailController::class,'sendMail'])->name('sendMail');
+Route::get('/sendMailAll',[MailController::class,'sendMailAll'])->name('sendMailAll');
+Route::get('/sendMailNewMember',[MailController::class,'sendMailNewMember'])->name('sendMailNewMember');
 Route::group(['middleware' => ['auth']], function () {
     // * dashboard
     Route::resource('dashboard', DashboardController::class);
