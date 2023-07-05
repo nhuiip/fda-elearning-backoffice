@@ -15,6 +15,7 @@ class MailController extends Controller
         $this->updateNotified($member->id);
         return Mail::to($member->email)->send(new MemberInfoMail($member));
     }
+
     public function sendMailAll()
     {
         $member = Member::all();
@@ -27,6 +28,7 @@ class MailController extends Controller
         }
         return count($member);;
     }
+
     public function sendMailNewMember()
     {
         $member = Member::where('notified', false)->get();
@@ -39,6 +41,7 @@ class MailController extends Controller
         }
         return count($member);
     }
+
     private function updateNotified($memberId)
     {
         $data = Member::findOrFail($memberId);

@@ -32,6 +32,7 @@ Route::get('/sendMailNewMember',[MailController::class,'sendMailNewMember'])->na
 Route::group(['middleware' => ['auth']], function () {
     // * dashboard
     Route::resource('dashboard', DashboardController::class);
+    Route::post('/dashboard/getRegisterAndVisit', [DashboardController::class, 'getRegisterAndVisit'])->name('dashboard.getRegisterAndVisit');
     // * members
     Route::resource('members', MemberController::class)->except('create', 'show');
     Route::get('/members/create/{type}', [MemberController::class, 'create'])->name('members.create');
